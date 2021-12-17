@@ -35,7 +35,7 @@ class Database {
       password: process.env.password,
       host: process.env.host,
       port: +process.env.port,
-    });
+    }).connect();
   }
 
   getDefaultTables() {

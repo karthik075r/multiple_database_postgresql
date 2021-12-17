@@ -12,47 +12,60 @@ class AddUserUseCase extends BaseUseCase {
   }
 
   async execute() {
+    let client;
     try {
       console.log(this.request.body);
       const { organizationName, name, email, phoneNumber } = await this.request
         .body;
+
       const pool = new Pool();
+
       let connectionObj = await pool.createAndGetConnectionByOrganizationName(
         organizationName.toLowerCase()
       );
       const { db, existingDb } = connectionObj;
       console.log(existingDb);
+
+      client = db;
+
+      await client.query("BEGIN");
+
       if (!existingDb) {
         const tables = pool.getDefaultTables();
 
         for await (let table of tables) {
           console.log(table, "=====>");
-          await db.query(table);
+          await client.query(table);
         }
       }
 
       const migrations = pool.getMigrationQueries();
       for await (const migration of migrations) {
         console.log("migration = = => ", migration);
-        await db.query(migration);
+        await client.query(migration);
       }
-      let x = await db.query(
+      let x = await client.query(
         `INSERT INTO users (name, email, organizationName,phoneNumber) VALUES ('${name}', '${email}', '${organizationName.toLowerCase()}','${phoneNumber}');`
       );
 
-      let data = await db.query(
+      let data = await client.query(
         `SELECT *
         FROM users
         `
       );
+
+      await client.query("COMMIT");
+
       return {
         message: "Successfully added user",
         data: data.rows,
       };
     } catch (error) {
       console.log(error, "err");
-
+      await client?.query("ROLLBACK");
       throw error;
+    } finally {
+      await client?.release();
     }
   }
 
