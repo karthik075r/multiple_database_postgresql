@@ -39,13 +39,19 @@ class AddUserUseCase extends BaseUseCase {
         }
       }
 
-      const migrations = pool.getMigrationQueries();
-      for await (const migration of migrations) {
-        console.log("migration = = => ", migration);
-        await client.query(migration);
+      let list = await client.query(
+        "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'metaVersion'"
+      );
+      if (list.rows.length < 2) {
+        const migrations = pool.getMigrationQueries();
+        for await (const migration of migrations) {
+          console.log("migration = = => ", migration);
+          await client.query(migration);
+        }
       }
+
       let x = await client.query(
-        `INSERT INTO users (name, email, organizationName,phoneNumber) VALUES ('${name}', '${email}', '${organizationName.toLowerCase()}','${phoneNumber}');`
+        `INSERT INTO users ("name", "email", "organizationName","phoneNumber") VALUES ('${name}', '${email}', '${organizationName.toLowerCase()}','${phoneNumber}');`
       );
 
       let data = await client.query(
