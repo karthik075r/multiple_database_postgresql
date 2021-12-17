@@ -1,0 +1,24 @@
+{
+  "include": ["./src/**/*", "*/**/*.d.ts"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "lib": ["es6"],
+    "experimentalDecorators": true,
+    "allowJs": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "strict": false,
+    "noImplicitAny": false,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strictPropertyInitialization": false,
+    "types": ["node"],
+    "typeRoots": ["./node_modules/@types"]
+  },
+  "paths": {
+    "exceljs": ["node_modules/exceljs/dist/exceljs.min"]
+  }
+}
