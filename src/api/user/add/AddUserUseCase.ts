@@ -43,7 +43,7 @@ class AddUserUseCase extends BaseUseCase {
         "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'metaVersion'"
       );
       if (list.rows.length < 2) {
-        const migrations = pool.getMigrationQueries();
+        const migrations = pool.getV2MigrationQueries();
         for await (const migration of migrations) {
           console.log("migration = = => ", migration);
           await client.query(migration);

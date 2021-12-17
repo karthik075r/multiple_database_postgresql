@@ -82,7 +82,7 @@ class Database {
       );`,
     ];
   }
-  getMigrationQueries() {
+  getV2MigrationQueries() {
     return [
       `ALTER TABLE users
         ADD COLUMN IF NOT EXISTS "phoneNumber" VARCHAR;`,
