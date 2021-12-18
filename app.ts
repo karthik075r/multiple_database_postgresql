@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import * as dotenv from "dotenv";
 import user from "./src/api/user/routers";
+import manufacture from "./src/api/manufacture/routers";
+
 dotenv.config();
 
 const app = express();
@@ -31,6 +33,8 @@ app.post("/test", (req, res) => {
     .send({ message: "Testcase Successfully completed", data: req.body });
 });
 app.use("/api", user);
+app.use("/api", manufacture);
+
 // Index Route
 app.get("/", (req, res) => {
   res.status(404).send("Invalid Endpoint");
